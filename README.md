@@ -1,4 +1,4 @@
-# Mintality — Plant Monitor (Microcontroller)
+# Mintality — Plant Monitor
 
 An ESP32-based IoT plant care monitor that tracks soil moisture, displays an emotion-based face on a TFT screen, and lets a companion app remotely trigger a watering pump via Firebase.
 
@@ -23,72 +23,7 @@ An ESP32-based IoT plant care monitor that tracks soil moisture, displays an emo
 
 > **Note:** The moisture sensor must use an ADC1 pin (GPIO 32–39). ADC2 pins are muxed with the WiFi radio and produce incorrect readings when WiFi is active.
 
-## Software dependencies
-
-Managed by PlatformIO (`platformio.ini`):
-
-| Library | Version | Purpose |
-|---------|---------|---------|
-| Firebase ESP32 Client | ^4.4.17 | Realtime Database reads/writes, auth |
-| Adafruit ST7735 and ST7789 | ^1.10.3 | TFT SPI display driver |
-| Adafruit GFX Library | ^1.11.5 | Graphics primitives (bitmaps, arcs, text) |
-| Arduino framework (ESP32) | — | WiFi, SD, ADC, core runtime |
-
-## Project structure
-
-```
-Convergent plant/
-├── platformio.ini              # PlatformIO build config
-├── src/
-│   ├── main.cpp                # Core firmware (~617 lines)
-│   ├── HAPPY_FACE.h            # RGB565 bitmap — happy face
-│   ├── MID_FACE.h              # RGB565 bitmap — neutral face
-│   ├── SAD_FACE.h              # RGB565 bitmap — sad face
-│   └── faces_bitmaps.h         # PROGMEM fallback arrays (no SD card)
-└── tools/
-    ├── generate_faces.py       # PNG → RGB565 C array converter
-    ├── plant-faces-happy-when-watered-task-completed.png
-    ├── plant-faces-neutral.png
-    └── plant-faces-sad.png
-```
-
-## Setup
-
-### 1. Install PlatformIO
-
-Install the [PlatformIO IDE extension](https://platformio.org/install/ide?install=vscode) for VS Code, or the PlatformIO CLI.
-
-### 2. Configure credentials
-
-In `src/main.cpp`, replace the placeholder values near the top of the file:
-
-```cpp
-#define WIFI_SSID     "your-network-name"
-#define WIFI_PASSWORD "your-wifi-password"
-
-#define FIREBASE_HOST "https://your-project-default-rtdb.firebaseio.com"
-#define FIREBASE_AUTH "your-database-secret"
-#define DB_PATH       "/plants/your-plant-id"
-```
-
-### 3. Build and flash
-
-```bash
-pio run --target upload
-```
-
-### 4. (Optional) Regenerate face bitmaps
-
-If you want to swap in new face images, replace the PNGs in `/tools/` and run:
-
-```bash
-cd tools
-python generate_faces.py
-```
-
-This converts each PNG to an RGB565 C header. Copy the output files into `/src/`.
-
-## Firebase data schema
+## Firebase data
 
 The device reads and writes to the following paths under `DB_PATH`:
 
